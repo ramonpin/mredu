@@ -28,7 +28,8 @@ def __input_file(path):
 
 def input_file(path):
     """
-    Read common text file as a stream of (k, v) pairs where k is line number and v is line text
+    Read common text file as a stream of (k, v) pairs where k is line number
+    and v is line text
     :param path: path to the file to read
     :return: lazy seq of pairs
     """
@@ -37,13 +38,15 @@ def input_file(path):
 
 def input_kv_file(path, sep="\t"):
     """
-    Read common text file as a stream of pairs (k, v) where k is the first sequence of characters in the line until sep
-     and v is contains the rest of characters after removing that first sep.
+    Read common text file as a stream of pairs (k, v) where k is the first
+    sequence of characters in the line until sep and v is contains the rest of
+    characters after removing that first sep.
     :param path: path to the file to read
     :param sep: optional separator to use during k, v pair resolution
     :return: lazy seq of pairs
     """
-    return map(lambda line: line.split(sep=sep, maxsplit=1), __input_file(path))
+    return map(lambda line: line.split(sep=sep, maxsplit=1),
+               __input_file(path))
 
 
 def process_mapper(in_seq, func):
@@ -79,7 +82,28 @@ def process_reducer(in_seq, func):
         map(lambda t: func(t[0], t[1]), in_seq))
 
 
-def map_red(in_seq, mapper=lambda k,v: (k, v), reducer=lambda k,vs: [(k, v) for v in vs]):
+def identity_mapper(k, v):
+    """
+    This is the identity mapper, just lets (k, v) pass to the next phase
+    :param k: key
+    :param v: value
+    :return: (k,v) as a pair
+    """
+    return k, v
+
+
+def identity_reducer(k, vs):
+    """
+    This is the identity reducer, unrolls the values and recreates all the
+    (k, v) pairs again.
+    :param k: key
+    :param vs: list of values
+    :return: (k,v) as a pair
+    """
+    return [(k, v) for v in vs]
+
+
+def map_red(in_seq, mapper=identity_mapper, reducer=identity_reducer):
     """
     Full map_red process definition
     :param in_seq: input (k, v) sequence
