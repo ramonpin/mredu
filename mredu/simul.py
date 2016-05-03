@@ -22,8 +22,10 @@ def __input_file(path):
     :param path: path of the file to read
     :return: generator that gives us a line each time we call __next__
     """
-    for line in open(path, 'r'):
+    f = open(path, 'r')
+    for line in f:
         yield line.strip()
+    f.close()
 
 
 def input_file(path):
