@@ -1,3 +1,5 @@
+# -*- coding: UTF-8 -*-
+
 from mredu import simul
 
 l = [('a', 1), ('b', 2), ('a', 3), ('c', 9), ('b', 6)]

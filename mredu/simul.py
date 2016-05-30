@@ -1,3 +1,5 @@
+import re
+import codecs
 from toolz.itertoolz import groupby
 from itertools import count
 
@@ -5,8 +7,8 @@ from itertools import count
 def __flatten(ls):
     """
     Aux function to flatten lists and remove None from result (k, v) sequences
-    :param ls:
-    :return:
+    :param ls: original list
+    :return: flattened list
     """
     for e in ls:
         if type(e) is list:
@@ -22,7 +24,7 @@ def __input_file(path):
     :param path: path of the file to read
     :return: generator that gives us a line each time we call __next__
     """
-    f = open(path, 'r')
+    f = codecs.open(path, encoding='utf-8')
     for line in f:
         yield line.strip()
     f.close()
@@ -47,7 +49,7 @@ def input_kv_file(path, sep="\t"):
     :param sep: optional separator to use during k, v pair resolution
     :return: lazy seq of pairs
     """
-    return map(lambda line: line.split(sep=sep, maxsplit=1),
+    return map(lambda line: re.split(sep, line, maxsplit=1, flags=re.UNICODE),
                __input_file(path))
 
 
@@ -109,13 +111,13 @@ def map_red(in_seq, mapper=identity_mapper, reducer=identity_reducer):
     """
     Full map_red process definition
     :param in_seq: input (k, v) sequence
-    :param mapper_func: mapper function to apply
-    :param reducer_func: reducer function to apply
+    :param mapper: mapper function to apply
+    :param reducer: reducer function to apply
     :return: (k, v) resulting sequence
     """
     return process_reducer(
-              process_shuffle_sort(process_mapper(in_seq, mapper)),
-              reducer)
+        process_shuffle_sort(process_mapper(in_seq, mapper)),
+        reducer)
 
 
 def run(mp_proc, sep="\t"):

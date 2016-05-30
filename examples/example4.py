@@ -1,3 +1,5 @@
+# -*- coding: UTF-8 -*-
+
 from mredu.simul import map_red, input_kv_file, run
 from re import split
 
