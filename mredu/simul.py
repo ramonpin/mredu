@@ -70,7 +70,8 @@ def process_shuffle_sort(in_seq):
     :param in_seq: (k, v) pairs from mapper application
     :return: shuffle-sorted (k, [v, v, v...]) pairs to be used for reduce
     """
-    grp = groupby(lambda t: t[0], in_seq)
+    # if t[0] is a list needs to be casted as a tuple because lists can't be hash keys in python.
+    grp = groupby(lambda t: (tuple(t[0]) if type(t[0]) is list else t[0]), in_seq)
     for k, vs in grp.items():
         yield((k, [v[1] for v in vs]))
 
