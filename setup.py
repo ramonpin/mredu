@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='mredu',
-      version='0.3.1',
+      version='0.4.1',
       description='A simple simulator of a system which implements map/reduce paradigm.',
       url='http://github.com/ramonpin/mredu',
       author='ramonpin',
