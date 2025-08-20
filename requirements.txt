@@ -1,1 +1,4 @@
-toolz==0.7.4
+toolz>=0.12.0
+rich
+pytest
+pytest-cov

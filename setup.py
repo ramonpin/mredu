@@ -9,6 +9,7 @@ setup(name='mredu',
       license='Apache-2',
       packages=['mredu'],
       install_requires=[
-        'toolz',
+        'toolz>=0.12.0',
+        'rich',
       ],
       zip_safe=False)
