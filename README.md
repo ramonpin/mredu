@@ -10,7 +10,7 @@ Requirements
 ============
 To use it you will need:
 
-  * A Python interpreter and standard library. Tested with 2.7 and 3.5 versións of cpython.
+  * A Python 3.8+ interpreter.
   * Install required packages from PyPi:
 
     $> pip install mredu
@@ -25,6 +25,44 @@ There are several examples of use of the simulator in the examples directory.
   * example3: The ubiquitous word-count example written to run on the simulator
     and applied to the same quijote.txt file.
   * example4: Inverse k,v -> v,k agrupation
+
+Development
+-----------
+
+To contribute to this project, you will need to set up a development environment.
+
+1.  **Clone the repository and create a virtual environment:**
+
+    ```bash
+    git clone https://github.com/ramonpin/mredu.git
+    cd mredu
+    python3 -m venv .venv
+    source .venv/bin/activate
+    ```
+
+2.  **Install dependencies:**
+
+    Install the required dependencies, including the ones for development and testing:
+
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+3.  **Install the package in editable mode:**
+
+    This will allow you to import the package in your tests and run it as if it were installed, but your local changes will be reflected immediately.
+
+    ```bash
+    pip install -e .
+    ```
+
+4.  **Run the tests:**
+
+    To make sure everything is working correctly, run the test suite:
+
+    ```bash
+    pytest
+    ```
 
 Docs
 ====
@@ -52,7 +90,7 @@ First, you define your `mapper` function. It takes a key and a value as input (i
 import re
 
 def mymap(_, v):
-    words = list(filter(lambda s: s != '', re.split(r'\W', v, flags=re.UNICODE)))
+    words = list(filter(lambda s: s != '', re.split(r'\W', v)))
     return [(word.lower(), 1) for word in words]
 ```
 
