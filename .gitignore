@@ -5,7 +5,12 @@
 /dist
 /build
 .coverage
+htmlcov/
+
+# Virtual environments
+.venv/
+venv/
+env/
 
 # uv
-.venv/
 uv.lock
