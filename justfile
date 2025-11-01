@@ -81,11 +81,13 @@ publish-test: build
 
 # Publish to PyPI (production)
 publish: build
-    @echo "⚠️  WARNING: This will publish to PRODUCTION PyPI!"
-    @echo "Press Ctrl+C to cancel, or Enter to continue..."
-    @read
+    #!/usr/bin/env bash
+    set -euo pipefail
+    echo "⚠️  WARNING: This will publish to PRODUCTION PyPI!"
+    echo "Press Ctrl+C to cancel, or Enter to continue..."
+    read -r
     uv run twine upload dist/*
-    @echo "✅ Published to https://pypi.org/project/mredu/"
+    echo "✅ Published to https://pypi.org/project/mredu/"
 
 # View package info
 info:
@@ -116,12 +118,14 @@ stats:
 
 # Create a new release (bump version, build, tag)
 release VERSION:
-    @echo "Creating release {{VERSION}}..."
-    @sed -i 's/^version = .*/version = "{{VERSION}}"/' pyproject.toml
-    @git add pyproject.toml
-    @git commit -m "chore: Bump version to {{VERSION}}"
-    @git tag -a v{{VERSION}} -m "Release {{VERSION}}"
-    @echo "✅ Release {{VERSION}} created. Push with: git push && git push --tags"
+    #!/usr/bin/env bash
+    set -euo pipefail
+    echo "Creating release {{VERSION}}..."
+    sed -i 's/^version = .*/version = "{{VERSION}}"/' pyproject.toml
+    git add pyproject.toml
+    git commit -m "chore: Bump version to {{VERSION}}"
+    git tag -a v{{VERSION}} -m "Release {{VERSION}}"
+    echo "✅ Release {{VERSION}} created. Push with: git push && git push --tags"
 
 # Verify installation from PyPI works
 verify-pypi VERSION:
