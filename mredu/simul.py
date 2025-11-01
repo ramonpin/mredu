@@ -1,4 +1,5 @@
 import re
+from pathlib import Path
 from toolz.itertoolz import groupby
 from itertools import count
 from typing import (
@@ -39,33 +40,41 @@ def __flatten(ls: Iterable[Union[List[Pair], Pair]]) -> Iterable[Pair]:
             yield item
 
 
-def __input_file(path: str) -> Iterable[str]:
+def __input_file(path: Union[str, Path]) -> Iterable[str]:
     """
     Aux generator function to read text files lazily
-    :param path: path of the file to read
+    :param path: path of the file to read (str or Path object)
     :return: generator that gives us a line each time we call __next__
     """
-    with open(path, encoding="utf-8") as f:
-        for line in f:
-            yield line.strip()
+    path_obj = Path(path)
+    try:
+        with open(path_obj, encoding="utf-8") as f:
+            for line in f:
+                yield line.strip()
+    except FileNotFoundError:
+        raise FileNotFoundError(f"File not found: {path_obj}")
+    except PermissionError:
+        raise PermissionError(f"Permission denied: {path_obj}")
+    except UnicodeDecodeError as e:
+        raise ValueError(f"Cannot decode file {path_obj}: {e}")
 
 
-def input_file(path: str) -> Iterable[Pair]:
+def input_file(path: Union[str, Path]) -> Iterable[Pair]:
     """
     Read common text file as a stream of (k, v) pairs where k is line number
     and v is line text
-    :param path: path to the file to read
+    :param path: path to the file to read (str or Path object)
     :return: lazy seq of pairs
     """
     return zip(count(), __input_file(path))
 
 
-def input_kv_file(path: str, sep: str = "\t") -> Iterable[List[str]]:
+def input_kv_file(path: Union[str, Path], sep: str = "\t") -> Iterable[List[str]]:
     """
     Read common text file as a stream of pairs (k, v) where k is the first
     sequence of characters in the line until sep and v is contains the rest of
     characters after removing that first sep.
-    :param path: path to the file to read
+    :param path: path to the file to read (str or Path object)
     :param sep: optional separator to use during k, v pair resolution
     :return: lazy seq of pairs
     """
@@ -103,7 +112,7 @@ def process_reducer(
     in_seq: Iterable[Tuple[Key, List[Value]]], func: ReducerFunction
 ) -> Iterable[Pair]:
     """
-    Simulates mapper function application
+    Simulates reducer function application
     :param in_seq: (k, [v, v, v, ...]) pairs from
     :param func: reducer function to apply f(k, vs)
     :return: sequence of transformed (k, v)
@@ -159,5 +168,11 @@ def run(mp_proc: Iterable[Pair], sep: str = "\t") -> None:
     try:
         for k, v in mp_proc:
             console.print(f"[green]{k}[/green]{sep}[yellow]{v}[/yellow]")
+    except FileNotFoundError as e:
+        console.print(f"[bold red]File error: {e}[/bold red]")
+    except PermissionError as e:
+        console.print(f"[bold red]Permission error: {e}[/bold red]")
+    except ValueError as e:
+        console.print(f"[bold red]Value error: {e}[/bold red]")
     except Exception as e:
         console.print(f"[bold red]An error occurred during execution: {e}[/bold red]")

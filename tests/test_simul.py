@@ -1,4 +1,5 @@
 import pytest
+from pathlib import Path
 from mredu import simul
 
 
@@ -70,3 +71,66 @@ def test_run_with_error(capsys):
     simul.run(error_generator())
     captured = capsys.readouterr()
     assert "Test error" in captured.out
+
+
+def test_input_file_not_found():
+    """Test FileNotFoundError is raised with clear message"""
+    with pytest.raises(FileNotFoundError, match="File not found"):
+        list(simul.input_file("nonexistent_file.txt"))
+
+
+def test_input_file_with_pathlib(tmp_path):
+    """Test that Path objects work correctly"""
+    p = tmp_path / "test.txt"
+    p.write_text("line1\nline2")
+    
+    process = simul.input_file(p)  # Pass Path object
+    result = list(process)
+    
+    assert (0, "line1") in result
+    assert (1, "line2") in result
+
+
+def test_input_kv_file_with_pathlib(tmp_path):
+    """Test that Path objects work correctly with input_kv_file"""
+    p = tmp_path / "test_kv.txt"
+    p.write_text("key1\tvalue1\nkey2\tvalue2")
+    
+    process = simul.input_kv_file(p)
+    result = list(process)
+    
+    assert ['key1', 'value1'] in result
+    assert ['key2', 'value2'] in result
+
+
+def test_run_with_file_not_found_error(capsys):
+    """Test that FileNotFoundError is caught and displayed"""
+    def error_generator():
+        yield "a", 1
+        raise FileNotFoundError("test.txt not found")
+    
+    simul.run(error_generator())
+    captured = capsys.readouterr()
+    assert "File error" in captured.out
+
+
+def test_run_with_permission_error(capsys):
+    """Test that PermissionError is caught and displayed"""
+    def error_generator():
+        yield "a", 1
+        raise PermissionError("Permission denied")
+    
+    simul.run(error_generator())
+    captured = capsys.readouterr()
+    assert "Permission error" in captured.out
+
+
+def test_run_with_value_error_in_run(capsys):
+    """Test that ValueError is caught and displayed in run()"""
+    def error_generator():
+        yield "a", 1
+        raise ValueError("Invalid value")
+    
+    simul.run(error_generator())
+    captured = capsys.readouterr()
+    assert "Value error" in captured.out
