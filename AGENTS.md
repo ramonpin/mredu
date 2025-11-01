@@ -84,6 +84,13 @@ Run `just --list` to see all available commands. Common commands:
 - Automated testing, building, and publishing workflows
 - Release automation with version bumping and tagging
 - Package verification commands
+- Fixed shell compatibility issues in `publish` and `release` commands (bash shebang, proper `read` handling)
+
+### Bug Fixes (Completed)
+- Fixed `justfile` publish command: Changed from `sh` to `bash` with proper shebang
+- Fixed `read: arg count` error by using `read -r` instead of `@read`
+- Added `set -euo pipefail` to publish and release recipes for better error handling
+- Both commands now properly accept user input for confirmation
 
 ## Next Steps (Recommended)
 
@@ -170,3 +177,5 @@ Run `just --list` to see all available commands. Common commands:
 - **Platform Support**: Linux, macOS, Windows
 - **Package Status**: Ready for PyPI publication
 - **Dependencies**: Modern tooling (uv, pytest, twine, just)
+- **Version**: 1.1.0
+- **Justfile**: 20+ automated commands, all working correctly
