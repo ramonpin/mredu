@@ -1,10 +1,12 @@
 # Agent Guidelines for MREdu
 
+> **IMPORTANT**: After completing any change to the project, always verify if this AGENTS.md file needs to be updated to reflect new commands, workflows, dependencies, or improvements.
+
 ## Build/Test Commands
 
 ### Using just (recommended)
 
-Run `just --list` to see all available commands. Common commands:
+Run `just` for an interactive menu (requires [gum](https://github.com/charmbracelet/gum)), or `just --list` to see all available commands. Common commands:
 
 - **Install dependencies**: `just install` (or `uv sync`)
 - **Run all tests**: `just test`
@@ -111,6 +113,7 @@ Run `just --list` to see all available commands. Common commands:
 
 ### Task Automation (Completed)
 - Added comprehensive justfile with 20+ commands
+- Interactive task menu with gum integration (optional, falls back to just --list)
 - Automated testing, building, and publishing workflows
 - Release automation with version bumping and tagging
 - Package verification commands

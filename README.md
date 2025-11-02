@@ -113,6 +113,20 @@ To contribute to this project, you will need to set up a development environment
 
     See `justfile` or run `just --list` for all available commands.
 
+6. **Interactive task runner (optional but recommended):**
+
+    For an enhanced developer experience, install [gum](https://github.com/charmbracelet/gum):
+
+    ```bash
+    # On macOS
+    brew install gum
+
+    # On Linux
+    # See https://github.com/charmbracelet/gum#installation
+    ```
+
+    With `gum` installed, simply running `just` will present an interactive menu to select and execute tasks. Without `gum`, it will display the standard command list.
+
 ## Docs
 
 `mredu` simulates a MapReduce environment. The process is as follows:

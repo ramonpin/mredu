@@ -1,9 +1,23 @@
 # MREdu - Just command runner
 # Run 'just --list' to see all available commands
 
-# Default recipe to display help
-default:
-    @just --list
+# Default recipe to display help (interactive menu with gum if available)
+_default:
+  #!/usr/bin/env bash
+  set -euo pipefail
+  clear
+  if command -v gum &> /dev/null; then
+    TASKS=$(just --list --unsorted --list-heading "" | sed -E "s/^\s+//")
+    SELECTED=$(echo "$TASKS" | gum choose --ordered)
+    TASK=$(echo "$SELECTED" | awk '{print $1}')
+    if [[ -n "$SELECTED" ]]; then
+      just "$TASK"
+    fi
+  else
+    just --list
+    echo ""
+    echo "💡 Tip: Install 'gum' for an interactive menu (https://github.com/charmbracelet/gum)"
+  fi
 
 # Install dependencies and setup development environment
 install:
