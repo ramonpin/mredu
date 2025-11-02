@@ -5,25 +5,23 @@ how Apache Hadoop does.
 Its objective is to be used as an educational tool to learn how to code
 map/reduce algorithms without needing to install complex components.
 
-## Requirements
+## Installation
 
-To use it you will need:
+**Requirements**: Python 3.8 or higher.
 
-* A Python 3.8+ interpreter.
-* [uv](https://docs.astral.sh/uv/) package manager (recommended) or pip
-* Install required packages from PyPi:
+Install `mredu` from PyPI:
 
-    With uv (recommended):
+**With pip:**
 
-    ```bash
-    uv sync
-    ```
+```bash
+pip install mredu
+```
 
-    Or with pip:
+**With [uv](https://docs.astral.sh/uv/) (recommended):**
 
-    ```bash
-    pip install mredu
-    ```
+```bash
+uv add mredu
+```
 
 ## Examples
 
