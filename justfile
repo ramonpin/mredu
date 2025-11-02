@@ -97,12 +97,38 @@ info:
     @echo "Dependencies:"
     @uv run pip list | grep -E "toolz|rich|pytest"
 
-# Format and lint (requires ruff - future improvement)
-# lint:
-#     uv run ruff check mredu/ tests/
-# 
-# format:
-#     uv run ruff format mredu/ tests/
+# Run ruff linter
+lint:
+    uv run ruff check mredu/ tests/ examples/
+
+# Run ruff linter with auto-fix
+lint-fix:
+    uv run ruff check --fix mredu/ tests/ examples/
+
+# Format code with ruff
+format:
+    uv run ruff format mredu/ tests/ examples/
+
+# Check formatting without making changes
+format-check:
+    uv run ruff format --check mredu/ tests/ examples/
+
+# Run mypy type checker
+typecheck:
+    uv run mypy mredu/ tests/
+
+# Run all code quality checks (lint + format-check + typecheck)
+check-all: lint format-check typecheck
+    @echo "✅ All code quality checks passed!"
+
+# Setup pre-commit hooks
+setup-hooks:
+    uv run pre-commit install
+    @echo "✅ Pre-commit hooks installed"
+
+# Run pre-commit on all files
+pre-commit-all:
+    uv run pre-commit run --all-files
 
 # Show project statistics
 stats:

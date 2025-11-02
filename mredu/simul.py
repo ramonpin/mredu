@@ -1,7 +1,6 @@
 import re
-from pathlib import Path
-from toolz.itertoolz import groupby
 from itertools import count
+from pathlib import Path
 from typing import (
     Any,
     Callable,
@@ -11,12 +10,14 @@ from typing import (
     TypeVar,
     Union,
 )
+
 from rich.console import Console
+from toolz.itertoolz import groupby
 
 console = Console()
 
-Key = TypeVar("Key")
-Value = TypeVar("Value")
+Key = TypeVar('Key')
+Value = TypeVar('Value')
 
 # Type definitions for MapReduce components
 Pair = Tuple[Key, Value]
@@ -48,15 +49,15 @@ def __input_file(path: Union[str, Path]) -> Iterable[str]:
     """
     path_obj = Path(path)
     try:
-        with open(path_obj, encoding="utf-8") as f:
+        with open(path_obj, encoding='utf-8') as f:
             for line in f:
                 yield line.strip()
-    except FileNotFoundError:
-        raise FileNotFoundError(f"File not found: {path_obj}")
-    except PermissionError:
-        raise PermissionError(f"Permission denied: {path_obj}")
+    except FileNotFoundError as e:
+        raise FileNotFoundError(f'File not found: {path_obj}') from e
+    except PermissionError as e:
+        raise PermissionError(f'Permission denied: {path_obj}') from e
     except UnicodeDecodeError as e:
-        raise ValueError(f"Cannot decode file {path_obj}: {e}")
+        raise ValueError(f'Cannot decode file {path_obj}: {e}') from e
 
 
 def input_file(path: Union[str, Path]) -> Iterable[Pair]:
@@ -69,7 +70,7 @@ def input_file(path: Union[str, Path]) -> Iterable[Pair]:
     return zip(count(), __input_file(path))
 
 
-def input_kv_file(path: Union[str, Path], sep: str = "\t") -> Iterable[List[str]]:
+def input_kv_file(path: Union[str, Path], sep: str = '\t') -> Iterable[List[str]]:
     """
     Read common text file as a stream of pairs (k, v) where k is the first
     sequence of characters in the line until sep and v is contains the rest of
@@ -81,9 +82,7 @@ def input_kv_file(path: Union[str, Path], sep: str = "\t") -> Iterable[List[str]
     return (re.split(sep, line, maxsplit=1) for line in __input_file(path))
 
 
-def process_mapper(
-    in_seq: Iterable[Pair], func: MapperFunction
-) -> Iterable[Pair]:
+def process_mapper(in_seq: Iterable[Pair], func: MapperFunction) -> Iterable[Pair]:
     """
     Simulates mapper function application
     :param in_seq: (k, v) pairs to operate on
@@ -99,6 +98,7 @@ def process_shuffle_sort(in_seq: Iterable[Pair]) -> Iterable[Tuple[Key, List[Val
     :param in_seq: (k, v) pairs from mapper application
     :return: shuffle-sorted (k, [v, v, v...]) pairs to be used for reduce
     """
+
     # if t[0] is a list needs to be casted as a tuple because lists can't be hash keys in python.
     def get_key(t: Pair) -> Any:
         return tuple(t[0]) if isinstance(t[0], list) else t[0]
@@ -153,12 +153,10 @@ def map_red(
     :param reducer: reducer function to apply
     :return: (k, v) resulting sequence
     """
-    return process_reducer(
-        process_shuffle_sort(process_mapper(in_seq, mapper)), reducer
-    )
+    return process_reducer(process_shuffle_sort(process_mapper(in_seq, mapper)), reducer)
 
 
-def run(mp_proc: Iterable[Pair], sep: str = "\t") -> None:
+def run(mp_proc: Iterable[Pair], sep: str = '\t') -> None:
     """
     Lazily executes the mapred process and outputs into the console
     :param mp_proc:
@@ -167,12 +165,12 @@ def run(mp_proc: Iterable[Pair], sep: str = "\t") -> None:
     """
     try:
         for k, v in mp_proc:
-            console.print(f"[green]{k}[/green]{sep}[yellow]{v}[/yellow]")
+            console.print(f'[green]{k}[/green]{sep}[yellow]{v}[/yellow]')
     except FileNotFoundError as e:
-        console.print(f"[bold red]File error: {e}[/bold red]")
+        console.print(f'[bold red]File error: {e}[/bold red]')
     except PermissionError as e:
-        console.print(f"[bold red]Permission error: {e}[/bold red]")
+        console.print(f'[bold red]Permission error: {e}[/bold red]')
     except ValueError as e:
-        console.print(f"[bold red]Value error: {e}[/bold red]")
+        console.print(f'[bold red]Value error: {e}[/bold red]')
     except Exception as e:
-        console.print(f"[bold red]An error occurred during execution: {e}[/bold red]")
+        console.print(f'[bold red]An error occurred during execution: {e}[/bold red]')

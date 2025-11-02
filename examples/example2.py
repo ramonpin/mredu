@@ -1,5 +1,6 @@
-from mredu.simul import map_red, input_file, run
 from re import split
+
+from mredu.simul import input_file, map_red, run
 
 
 def mymap(k, v):
@@ -10,8 +11,7 @@ def mymap(k, v):
 def myred(k, vs):
     return k, sum(vs)
 
+
 if __name__ == '__main__':
-    process = map_red(input_file('data/quijote.txt'),
-                      mapper=mymap,
-                      reducer=myred)
+    process = map_red(input_file('data/quijote.txt'), mapper=mymap, reducer=myred)
     run(process)

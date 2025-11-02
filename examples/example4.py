@@ -1,5 +1,4 @@
-from mredu.simul import map_red, input_kv_file, run
-from re import split
+from mredu.simul import input_kv_file, map_red, run
 
 
 def mymap(k, v):
@@ -11,5 +10,5 @@ def myred(k, vs):
 
 
 if __name__ == '__main__':
-    process = map_red(input_kv_file('data/palabras.txt'), mymap, myred)
+    process = map_red(input_kv_file('data/palabras.txt'), mymap, myred)  # type: ignore[arg-type]
     run(process)

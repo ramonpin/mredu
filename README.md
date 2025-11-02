@@ -87,6 +87,34 @@ To contribute to this project, you will need to set up a development environment
     uv run pytest --cov=mredu
     ```
 
+5. **Setup code quality tools (recommended for contributors):**
+
+    Install pre-commit hooks to automatically check code quality before commits:
+
+    ```bash
+    uv run pre-commit install
+    ```
+
+    This will run `ruff` (linter + formatter) and `mypy` (type checker) automatically.
+
+    You can also run quality checks manually:
+
+    ```bash
+    uv run ruff check .          # Lint code
+    uv run ruff format .         # Format code
+    uv run mypy mredu/ tests/    # Type check
+    ```
+
+    Or use [just](https://github.com/casey/just) for convenience (if installed):
+
+    ```bash
+    just check-all    # Run all quality checks
+    just test         # Run tests
+    just format       # Format code
+    ```
+
+    See `justfile` or run `just --list` for all available commands.
+
 ## Docs
 
 `mredu` simulates a MapReduce environment. The process is as follows:
