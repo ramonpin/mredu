@@ -135,6 +135,7 @@ Run `just --list` to see all available commands. Common commands:
   - Runs ruff (lint + format), mypy, and basic file checks
   - Automatically enforces code quality on every commit
   - 9 hooks configured (trailing whitespace, end-of-file, yaml, toml, merge conflicts, ruff check, ruff format, mypy)
+  - Excludes `data/` directory from formatting hooks (preserves test data)
 - **justfile commands**: 9 new commands added
   - `just lint`, `just lint-fix`, `just format`, `just format-check`
   - `just typecheck`, `just check-all`
@@ -145,6 +146,10 @@ Run `just --list` to see all available commands. Common commands:
   - All type errors resolved
   - Exception chains properly maintained (`raise ... from err`)
   - Ambiguous variable names eliminated
+- **Cleanup**:
+  - Removed `setup.py` (superseded by `pyproject.toml`)
+  - Removed `Ejemplos con MREdu.ipynb` (not part of package)
+  - Updated README.md with clearer installation instructions (pip + uv)
 
 ## Next Steps (Recommended)
 
