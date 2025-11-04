@@ -60,8 +60,10 @@ def test_input_kv_file(tmp_path):
     process = simul.input_kv_file(str(p))
     result = list(process)
 
-    assert ['key1', 'value1'] in result
-    assert ['key2', 'value2'] in result
+    assert ('key1', 'value1') in result
+    assert ('key2', 'value2') in result
+    # Verify that result contains tuples, not lists
+    assert all(isinstance(item, tuple) for item in result)
 
 
 def test_run_with_error(capsys):
@@ -100,8 +102,10 @@ def test_input_kv_file_with_pathlib(tmp_path):
     process = simul.input_kv_file(p)
     result = list(process)
 
-    assert ['key1', 'value1'] in result
-    assert ['key2', 'value2'] in result
+    assert ('key1', 'value1') in result
+    assert ('key2', 'value2') in result
+    # Verify that result contains tuples, not lists
+    assert all(isinstance(item, tuple) for item in result)
 
 
 def test_run_with_file_not_found_error(capsys):
@@ -138,3 +142,20 @@ def test_run_with_value_error_in_run(capsys):
     simul.run(error_generator())
     captured = capsys.readouterr()
     assert 'Value error' in captured.out
+
+
+def test_input_kv_file_edge_cases(tmp_path):
+    """Test edge cases: lines without separator, empty lines"""
+    p = tmp_path / 'edge_cases.txt'
+    p.write_text('key1\tvalue1\nkey_without_value\n\nkey2\tvalue2')
+
+    process = simul.input_kv_file(p)
+    result = list(process)
+
+    # Lines with separator
+    assert ('key1', 'value1') in result
+    assert ('key2', 'value2') in result
+    # Line without separator should have empty value
+    assert ('key_without_value', '') in result
+    # Empty lines should be skipped
+    assert len(result) == 3

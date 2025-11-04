@@ -82,6 +82,7 @@ indent-style = "space"
 python_version = "3.9"
 warn_return_any = true
 warn_unused_configs = true
+# Default: moderate strictness
 disallow_untyped_defs = false
 disallow_incomplete_defs = false
 check_untyped_defs = true
@@ -89,7 +90,13 @@ no_implicit_optional = true
 warn_redundant_casts = true
 warn_unused_ignores = true
 strict_equality = true
-files = ["mredu", "tests"]
+files = ["mredu", "tests", "examples"]
+
+# Strict type checking for the library code
+[[tool.mypy.overrides]]
+module = "mredu.*"
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
 
 [[tool.mypy.overrides]]
 module = "toolz.*"

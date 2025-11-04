@@ -1,12 +1,16 @@
 # Agent Guidelines for MREdu
 
-> **IMPORTANT**: After completing any change to the project, always verify if this AGENTS.md file needs to be updated to reflect new commands, workflows, dependencies, or improvements.
+> **IMPORTANT**: After completing any change to the project, always verify if
+> this AGENTS.md file needs to be updated to reflect new commands, workflows,
+> dependencies, or improvements.
 
 ## Build/Test Commands
 
 ### Using just (recommended)
 
-Run `just` for an interactive menu (requires [gum](https://github.com/charmbracelet/gum)), or `just --list` to see all available commands. Common commands:
+Run `just` for an interactive menu (requires
+[gum](https://github.com/charmbracelet/gum)), or `just --list` to see all
+available commands. Common commands:
 
 - **Install dependencies**: `just install` (or `uv sync`)
 - **Run all tests**: `just test`
@@ -50,7 +54,8 @@ Run `just` for an interactive menu (requires [gum](https://github.com/charmbrace
 
 ## Code Style
 
-**Note**: Code quality is enforced by `ruff` (linter + formatter), `mypy` (type checker), and `pre-commit` hooks. Run `just check-all` before committing.
+**Note**: Code quality is enforced by `ruff` (linter + formatter), `mypy` (type
+checker), and `pre-commit` hooks. Run `just check-all` before committing.
 
 ### Formatting (enforced by ruff)
 
@@ -68,7 +73,8 @@ Run `just` for an interactive menu (requires [gum](https://github.com/charmbrace
 
 ### Type Hints
 
-- Use type hints for all function signatures: `Iterable[Pair]`, `Callable[[Key, Value], MapperResult]`, etc.
+- Use type hints for all function signatures: `Iterable[Pair]`,
+  `Callable[[Key, Value], MapperResult]`, etc.
 - Define custom type aliases at module level: `Pair = Tuple[Key, Value]`
 - Support both str and Path objects for file paths: `Union[str, Path]`
 - **Checked by**: mypy with moderate strictness
@@ -78,57 +84,87 @@ Run `just` for an interactive menu (requires [gum](https://github.com/charmbrace
 - Functions: `snake_case` (e.g., `input_file`, `process_mapper`)
 - Private functions: prefix with `__` (e.g., `__flatten`, `__input_file`)
 - Type variables: `PascalCase` (e.g., `Key`, `Value`)
-- Avoid ambiguous names: No single-letter vars like `l` (use `data`, `items`, etc.)
+- Avoid ambiguous names: No single-letter vars like `l` (use `data`, `items`,
+  etc.)
 - **Enforced by**: ruff's pep8-naming rules
 
 ### Error Handling
 
-- Use try/except in user-facing functions like `run()` with rich console error formatting
+- Use try/except in user-facing functions like `run()` with rich console error
+  formatting
 - Provide descriptive error messages using `rich.console`
-- Use specific exceptions (FileNotFoundError, PermissionError, ValueError) instead of generic Exception
-- Always include context in error messages (e.g., file path, operation being performed)
+- Use specific exceptions (FileNotFoundError, PermissionError, ValueError)
+  instead of generic Exception
+- Always include context in error messages (e.g., file path, operation being
+  performed)
 - Use `raise ... from err` to maintain exception chains
 - **Enforced by**: ruff's flake8-bugbear rules (B904)
 
 ### File Path Handling
 
-- Always use `pathlib.Path` for file operations to ensure cross-platform compatibility
-- Accept both `str` and `Path` objects in function signatures: `Union[str, Path]`
+- Always use `pathlib.Path` for file operations to ensure cross-platform
+  compatibility
+- Accept both `str` and `Path` objects in function signatures:
+  `Union[str, Path]`
 - Convert string paths to Path objects internally: `path_obj = Path(path)`
 
 ## Recent Improvements
 
 ### Migration to uv (Completed)
+
 - Modern dependency management with `uv`
 - Fast lockfile-based installs
 - `pyproject.toml` following PEP 621 standards
 - All dependencies managed in dependency groups
 
 ### Minor Improvements (Completed)
+
 - Fixed docstring in `process_reducer` (was incorrectly labeled as "mapper")
 - Added pathlib.Path support for Windows compatibility
-- Implemented granular error handling (FileNotFoundError, PermissionError, UnicodeDecodeError)
+- Implemented granular error handling (FileNotFoundError, PermissionError,
+  UnicodeDecodeError)
 - Added 6 new tests (12 total, 91% coverage)
 - Better error messages with context
 
 ### Task Automation (Completed)
+
 - Added comprehensive justfile with 20+ commands
-- Interactive task menu with gum integration (optional, falls back to just --list)
+- Interactive task menu with gum integration (optional, falls back to just
+  --list)
 - Automated testing, building, and publishing workflows
 - Release automation with version bumping and tagging
 - Package verification commands
-- Fixed shell compatibility issues in `publish` and `release` commands (bash shebang, proper `read` handling)
+- Fixed shell compatibility issues in `publish` and `release` commands (bash
+  shebang, proper `read` handling)
 
-### Bug Fixes (Completed)
-- Fixed `justfile` publish command: Changed from `sh` to `bash` with proper shebang
+### Bug Fixes (Completed ✅)
+
+- Fixed `justfile` publish command: Changed from `sh` to `bash` with proper
+  shebang
 - Fixed `read: arg count` error by using `read -r` instead of `@read`
-- Added `set -euo pipefail` to publish and release recipes for better error handling
+- Added `set -euo pipefail` to publish and release recipes for better error
+  handling
 - Both commands now properly accept user input for confirmation
+- **Fixed `input_kv_file` return type**: Changed from `Iterable[List[str]]` to
+  `Iterable[Tuple[str, str]]` for type consistency with `Pair` (simul.py:72-93)
+- **Fixed regex injection**: Changed from `re.split()` to `str.split()` for
+  literal separator matching (simul.py:89)
+- **Fixed double parentheses**: Removed extra parentheses in
+  `process_shuffle_sort` yield statement (simul.py:119)
+- **Added edge case handling**: `input_kv_file` now properly handles empty lines
+  and lines without separator
+- **Removed `re` import**: No longer needed after switching to `str.split()`
+- **Added `examples/` to mypy**: Now checks all examples for type errors
+  (pyproject.toml:92)
+- **Removed `# type: ignore`**: No longer needed in example4.py after fixing
+  types
 
 ### Code Quality Tools (Completed ✅)
+
 - **ruff** (v0.14.3+): Ultrafast linter and formatter
   - Configured with 100 char line length, single quotes
-  - Enforces pycodestyle, pyflakes, isort, pep8-naming, pyupgrade, flake8-bugbear, flake8-comprehensions, flake8-simplify, flake8-return
+  - Enforces pycodestyle, pyflakes, isort, pep8-naming, pyupgrade,
+    flake8-bugbear, flake8-comprehensions, flake8-simplify, flake8-return
   - Auto-fixes import sorting, trailing whitespace, and more
 - **mypy** (v1.18.2+): Static type checker
   - Python 3.9+ compatibility
@@ -137,7 +173,8 @@ Run `just` for an interactive menu (requires [gum](https://github.com/charmbrace
 - **pre-commit** (v4.3.0+): Git hooks framework
   - Runs ruff (lint + format), mypy, and basic file checks
   - Automatically enforces code quality on every commit
-  - 9 hooks configured (trailing whitespace, end-of-file, yaml, toml, merge conflicts, ruff check, ruff format, mypy)
+  - 9 hooks configured (trailing whitespace, end-of-file, yaml, toml, merge
+    conflicts, ruff check, ruff format, mypy)
   - Excludes `data/` directory from formatting hooks (preserves test data)
 - **justfile commands**: 9 new commands added
   - `just lint`, `just lint-fix`, `just format`, `just format-check`
@@ -215,7 +252,9 @@ Run `just` for an interactive menu (requires [gum](https://github.com/charmbrace
    - Use `from __future__ import annotations` for cleaner type hints
    - Add more specific types (e.g., `Iterator` vs `Iterable`, `os.PathLike`)
    - Define Protocol classes for duck typing
-   - Fix `input_kv_file` return type (currently `Iterable[List[str]]`, should be `Iterable[Tuple[str, str]]`)
+   - ✅ ~~Fix `input_kv_file` return type~~ (COMPLETED - now returns
+     `Iterable[Tuple[str, str]]`)
+   - Consider stricter mypy settings (`disallow_untyped_defs = true`)
 
 ### Low Priority
 
@@ -240,16 +279,19 @@ Run `just` for an interactive menu (requires [gum](https://github.com/charmbrace
 
 ## Project Status
 
-- **Tests**: 12/12 passing (100%)
-- **Coverage**: 91% (64/70 lines)
+- **Tests**: 13/13 passing (100%) ✅
+- **Coverage**: 91%+ (increased with new edge case test)
 - **Code Quality**: ✅ All checks passing (ruff + mypy + pre-commit)
+- **Type Safety**: ✅ All type errors resolved, including examples/
 - **Python Support**: 3.9+ (mypy requires 3.9+, runtime still supports 3.8)
 - **Platform Support**: Linux, macOS, Windows
-- **Package Status**: Ready for PyPI publication
-- **Dependencies**: Modern tooling (uv, pytest, twine, just, ruff, mypy, pre-commit, bpython)
-- **Version**: 1.1.1
+- **Package Status**: Ready for PyPI publication (v1.2.0)
+- **Dependencies**: Modern tooling (uv, pytest, twine, just, ruff, mypy,
+  pre-commit, bpython)
+- **Version**: 1.1.1 → 1.2.0 (pending release with bug fixes)
 - **Justfile**: 30+ automated commands, all working correctly
 - **Pre-commit hooks**: ✅ Installed and configured (9 hooks)
+- **Known Issues**: 🎉 None! All critical bugs have been resolved
 
 ## Quick Start for Developers
 

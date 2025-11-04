@@ -129,7 +129,7 @@ format-check:
 
 # Run mypy type checker
 typecheck:
-    uv run mypy mredu/ tests/
+    uv run mypy mredu/ tests/ examples/
 
 # Run all code quality checks (lint + format-check + typecheck)
 check-all: lint format-check typecheck

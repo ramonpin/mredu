@@ -1,4 +1,3 @@
-import re
 from itertools import count
 from pathlib import Path
 from typing import (
@@ -70,16 +69,28 @@ def input_file(path: Union[str, Path]) -> Iterable[Pair]:
     return zip(count(), __input_file(path))
 
 
-def input_kv_file(path: Union[str, Path], sep: str = '\t') -> Iterable[List[str]]:
+def input_kv_file(path: Union[str, Path], sep: str = '\t') -> Iterable[Tuple[str, str]]:
     """
     Read common text file as a stream of pairs (k, v) where k is the first
-    sequence of characters in the line until sep and v is contains the rest of
+    sequence of characters in the line until sep and v contains the rest of
     characters after removing that first sep.
     :param path: path to the file to read (str or Path object)
-    :param sep: optional separator to use during k, v pair resolution
-    :return: lazy seq of pairs
+    :param sep: separator string (literal, not regex) to use during k, v pair resolution
+    :return: lazy seq of (k, v) tuples
+
+    Edge cases:
+    - Lines without separator: treated as (line, '')
+    - Empty lines: skipped
+    - Multiple separators: only first one is used (maxsplit=1)
     """
-    return (re.split(sep, line, maxsplit=1) for line in __input_file(path))
+    for line in __input_file(path):
+        if not line:  # Skip empty lines
+            continue
+        parts = line.split(sep, maxsplit=1)
+        if len(parts) == 2:
+            yield (parts[0], parts[1])
+        else:
+            yield (parts[0], '')
 
 
 def process_mapper(in_seq: Iterable[Pair], func: MapperFunction) -> Iterable[Pair]:
@@ -105,7 +116,7 @@ def process_shuffle_sort(in_seq: Iterable[Pair]) -> Iterable[Tuple[Key, List[Val
 
     grp = groupby(get_key, in_seq)
     for k, vs in grp.items():
-        yield ((k, [v[1] for v in vs]))
+        yield (k, [v[1] for v in vs])
 
 
 def process_reducer(
