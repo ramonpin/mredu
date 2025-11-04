@@ -30,7 +30,7 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "http://github.com/ramonpin/mredu"
+Homepage = "https://github.com/ramonpin/mredu"
 
 [build-system]
 requires = ["hatchling"]

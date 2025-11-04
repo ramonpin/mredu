@@ -247,7 +247,7 @@ Run `just` for an interactive menu (requires [gum](https://github.com/charmbrace
 - **Platform Support**: Linux, macOS, Windows
 - **Package Status**: Ready for PyPI publication
 - **Dependencies**: Modern tooling (uv, pytest, twine, just, ruff, mypy, pre-commit, bpython)
-- **Version**: 1.1.0
+- **Version**: 1.1.1
 - **Justfile**: 30+ automated commands, all working correctly
 - **Pre-commit hooks**: ✅ Installed and configured (9 hooks)
 
