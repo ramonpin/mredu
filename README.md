@@ -1,5 +1,10 @@
 # MREDU
 
+[![PyPI version](https://badge.fury.io/py/mredu.svg)](https://pypi.org/project/mredu/)
+[![Python versions](https://img.shields.io/pypi/pyversions/mredu.svg)](https://pypi.org/project/mredu/)
+[![License](https://img.shields.io/github/license/ramonpin/mredu.svg)](https://github.com/ramonpin/mredu/blob/main/LICENSE)
+[![Code style: ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
+
 A simple simulator of a system which implements map/reduce paradigm similarly to
 how Apache Hadoop does.
 Its objective is to be used as an educational tool to learn how to code
